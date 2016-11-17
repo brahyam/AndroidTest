@@ -16,41 +16,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-// Class created by someone learning chinese? I'm not sure
-// Updated by Unknown
-//
-// WARNING!!! Be careful about building the Retrofit Object. It requires to be executed in the same order it has been developed. Otherwise, weird things can happen or the app can crash
 
-/**
- * 耶穌巴列斯特羅
- *
- * 這是應用程序的主要活動。它顯示在主屏幕和AppCompatActivity繼承
- */
-public class MainActivity extends AppCompatActivity
-{
-    // Main Activity
-    // Principal Activity of this app
+public class MainActivity extends AppCompatActivity {
 
-    // Private fields
     private RecyclerView mList;
     private Map<String, String> mMap;
-    private Retrofit.Builder b;
+    private Retrofit.Builder builder;
 
-    // Public fields
-    public Retrofit r;
-    public Server s;
+    public Retrofit retrofit;
+    public Server server;
 
-    // Nothing fields
-    private Call<Marvel> c;
+    private Call<Marvel> marvelCall;
 
-    /**
-     * 在拉曼恰，名字我不記得了，時間不長，因為住在離那些槍和盾古代，精益黑客和竊喜靈獅的貴族村
-     *
-     * @param savedInstanceState 堂吉訶德
-     */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         // on create
 
         // call super always
@@ -63,25 +42,21 @@ public class MainActivity extends AppCompatActivity
         mList = (RecyclerView) findViewById(com.redbooth.comics.R.id.comic_list);
 
         // Create comic adapter
-        final ComicAdapter a = new ComicAdapter();
-
+        final ComicAdapter comicAdapter = new ComicAdapter();
 
         // set adapter
-        mList.setAdapter(a);
+        mList.setAdapter(comicAdapter);
 
-
-
-        String timestamp = "ts"; // replace here with correct values
-        String privateKey = "private_key"; // replace here with correct values
-        String publicKey = "public_key"; // replace here with correct values
+        String timestamp = String.valueOf(System.currentTimeMillis()); // replace here with correct values
+        String privateKey = "44500734e389e5be35cf88021b54f28718e49987"; // replace here with correct values
+        String publicKey = "ee2a8e9560b1402675b41cbb4a6d22a6"; // replace here with correct values
         String hash = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            hash = new BigInteger(1,md.digest(String.format("%s%s%s", timestamp, privateKey, publicKey).getBytes())).toString(16);
+            hash = new BigInteger(1, md.digest(String.format("%server%server%server", timestamp, privateKey, publicKey).getBytes())).toString(16);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
 
         // Create hashmap
         mMap = new HashMap<>();
@@ -89,60 +64,56 @@ public class MainActivity extends AppCompatActivity
         mMap.put("apikey", publicKey);
         mMap.put("hash", hash);
 
-
         // update marvel
 
-
         // Create builder
-        b = new Retrofit.Builder().baseUrl("http://gateway.marvel.com/v1/public/").addConverterFactory(GsonConverterFactory.create());
+        builder = new Retrofit.Builder().baseUrl("http://gateway.marvel.com/v1/public/").addConverterFactory(GsonConverterFactory.create());
 
         // call marvel updating. Don't forget to call it
-        marvel_updating(a, mMap, b);
+        marvel_updating(comicAdapter, mMap, builder);
     }
 
     /**
      * Method marvel_updating
      * Class MainActivity
-     *
+     * <p>
      * author Unknown
      * modified by Unknown
-     *
+     * <p>
      * This method receives a ComicAdapter, a Map and a Builder. Returns nothing.
      * This method updates marvel
      * This method generates a retrofit object and calls amazingcomics. It then calls
      * enqueue. It then notifies data set changed
      *
-     * @param a ComicAdapter a
-     * @param m Map mMap
-     * @param b Builder b
+     * @param comicAdapter ComicAdapter a
+     * @param stringMap    Map mMap
+     * @param builder      Builder builder
      */
-    private void marvel_updating(final ComicAdapter a, Map<String, String> m, Retrofit.Builder b)
-    {
+    private void marvel_updating(final ComicAdapter comicAdapter, Map<String, String> stringMap, Retrofit.Builder builder) {
         // update
 
-        // build r
-        r = b.build();
+        // build retrofit
+        retrofit = builder.build();
 
-        // create s
-        s = r.create(Server.class);
+        // create server
+        server = retrofit.create(Server.class);
 
-        // retrieve amazingcomics
-        c = s.amazingspiderman(1010733, m);
+        // retrieve amazing comics
+        marvelCall = server.amazingspiderman(1010733, stringMap);
 
-        // enqueue amazingcomics call
-        c.enqueue(new Callback<Marvel>() {
+        // enqueue amazing comics call
+        marvelCall.enqueue(new Callback<Marvel>() {
             @Override
             public void onResponse(Call<Marvel> c, Response<Marvel> r) {
                 // Everything is ok
                 if (r.code() == 200) {
 
                     // set
-                    a.setC(r.body().data.results);
+                    comicAdapter.setComics(r.body().data.results);
 
                     // notify data set changed
-                    a.notifyDataSetChanged();
+                    comicAdapter.notifyDataSetChanged();
                 }
-
             }
 
             @Override
@@ -151,7 +122,5 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
     }
-
 }
