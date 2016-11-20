@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Comics</string>
+    <string name="update_error">Unable to update comics. Please try again later.</string>
+    <string name="updated_comics">Updated Comics</string>
 </resources>
