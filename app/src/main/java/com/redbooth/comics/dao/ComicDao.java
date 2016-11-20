@@ -10,8 +10,16 @@ import java.util.List;
 
 public interface ComicDao {
 
+    /**
+     * Returns a list of all comics in DB ordered by title
+     * @return list of all comics contained in DB
+     */
     List<Comic> getAllComics();
 
+    /**
+     * Clears DB content and inserts a list of comics.
+     * @param comics list of comics to be inserted
+     */
     void updateComics(List<Comic> comics);
 
 }

@@ -2,6 +2,7 @@ package com.redbooth.comics;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ class ComicAdapter extends RecyclerView.Adapter<ComicViewHolder> {
         final Comic comic = comics.get(position);
         holder.item = comic;
         holder.title.setText(comic.getTitle());
+        Log.d(getClass().getSimpleName(),"onBindViewHolder - thumbnail url:"+comic.getThumbnailURL());
         Picasso.with(holder.itemView.getContext())
                 .load(comic.getThumbnailURL())
                 .fit()

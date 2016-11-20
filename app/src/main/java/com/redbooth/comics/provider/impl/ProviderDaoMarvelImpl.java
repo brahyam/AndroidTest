@@ -23,7 +23,6 @@ public class ProviderDaoMarvelImpl implements ProviderDao {
 
     @Override
     public void getComicsFromCharacter(int characterId, Map<String, String> query, final Callback<MarvelJsonResponse> callBackListener) {
-
         /**
          * Specific Marvel API security settings.
          */
